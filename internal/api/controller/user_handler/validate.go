@@ -8,7 +8,7 @@ import (
 )
 
 // Test an interface that requires certification
-func GetValidate(c *gin.Context) {
+func (h *handler) GetValidate(c *gin.Context) {
 	claims := c.MustGet("claims").(*md.CustomClaims)
 	if claims != nil {
 		c.JSON(http.StatusOK, gin.H{

@@ -11,6 +11,10 @@ type LoginReq struct {
 	Pwd  string `json:"password"`
 }
 
+func NewModel() *User {
+	return new(User)
+}
+
 // Insert data into the user table
 func (user *User) Insert() error {
 	return mysql.DB.Model(&User{}).Create(&user).Error

@@ -20,7 +20,7 @@ type LoginResult struct {
 
 // Login interface, user name and password login
 // name,password
-func Login(c *gin.Context) {
+func (h *handler) Login(c *gin.Context) {
 	var loginReq user.LoginReq
 	if c.BindJSON(&loginReq) == nil {
 		isPass, user, err := user.LoginCheck(loginReq)

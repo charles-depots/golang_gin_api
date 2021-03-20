@@ -3,7 +3,7 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	userHandle "golang-gin-api/internal/api/controller/user_handler"
+	userHandler "golang-gin-api/internal/api/controller/user_handler"
 	"golang-gin-api/internal/api/model/user"
 	md "golang-gin-api/internal/api/router/middleware"
 )
@@ -20,16 +20,19 @@ func InitHttpServer(logger *zap.Logger) {
 	// JWT middle
 	middlesJWT := md.JWTAuth(logger)
 
+	// User controller
+	userHandler := userHandler.New(logger)
+
 	v1 := router.Group("/V1/internal")
 	{
-		v1.POST("/customer/register", userHandle.RegisterUser)
-		v1.POST("/customer/token", userHandle.Login)
+		v1.POST("/customer/register", userHandler.RegisterUser)
+		v1.POST("/customer/token", userHandler.Login)
 	}
 
 	// secure v1
 	sv1 := router.Group("/V1/internal/auth", middlesJWT)
 	{
-		sv1.GET("/validate", userHandle.GetValidate)
+		sv1.GET("/validate", userHandler.GetValidate)
 	}
 	router.Run(":8080")
 }
