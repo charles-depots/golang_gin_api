@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"github.com/spf13/viper"
 )
 
@@ -31,4 +32,12 @@ func ParserConfig() {
 	DbConfig.User = config.GetString("mysql.user")
 	DbConfig.Passwd = config.GetString("mysql.passwd")
 	DbConfig.Database = config.GetString("mysql.database")
+}
+
+func ProjectName() string {
+	return "golang-gin-api"
+}
+
+func ProjectLogFile() string {
+	return fmt.Sprintf("./logs/%s-access.log", ProjectName())
 }

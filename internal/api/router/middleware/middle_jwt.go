@@ -3,7 +3,7 @@ package middleware
 import (
 	"errors"
 	"fmt"
-	"log"
+	"go.uber.org/zap"
 	"net/http"
 	"time"
 
@@ -16,11 +16,11 @@ var (
 	TokenNotValidYet error  = errors.New("Token not active yet")
 	TokenMalformed   error  = errors.New("That's not even a token")
 	TokenInvalid     error  = errors.New("Couldn't handle this token:")
-	SignKey          string = "charles.shao.101" // The signature information should be set to be dynamically obtained from the library
+	SignKey          string = "charles.101" // The signature information should be set to be dynamically obtained from the library
 )
 
 // JWTAuth Middleware, check token
-func JWTAuth() gin.HandlerFunc {
+func JWTAuth(logger *zap.Logger) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.Request.Header.Get("Authorization")
 		if token == "" {
@@ -30,10 +30,10 @@ func JWTAuth() gin.HandlerFunc {
 				"data":   nil,
 			})
 			c.Abort()
+			logger.Info("Token missing", zap.String("info", fmt.Sprintf("%s", "")))
 			return
 		}
 
-		log.Print("get token: ", token)
 		j := NewJWT()
 		// Parse the relevant information contained in the token
 		claims, err := j.ParserToken(token)
@@ -48,6 +48,7 @@ func JWTAuth() gin.HandlerFunc {
 					"data":   nil,
 				})
 				c.Abort()
+				logger.Info("Token expired", zap.String("info", fmt.Sprintf("%+v", err)))
 				return
 			}
 			// Other errors
@@ -56,13 +57,13 @@ func JWTAuth() gin.HandlerFunc {
 				"msg":    err.Error(),
 				"data":   nil,
 			})
+			logger.Error("Token expired", zap.String("panic", fmt.Sprintf("%+v", err)))
 			c.Abort()
 			return
 		}
 
 		// Resolve to specific claims related information
 		c.Set("claims", claims)
-
 	}
 }
 
@@ -118,7 +119,6 @@ func (j *JWT) ParserToken(tokenString string) (*CustomClaims, error) {
 		return j.SigningKey, nil
 	})
 
-	fmt.Println(token, err)
 	if err != nil {
 		// https://gowalker.org/github.com/dgrijalva/jwt-go#ValidationError
 		// jwt.ValidationError is an incorrect structure of an invalid token
