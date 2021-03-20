@@ -20,15 +20,15 @@ func ParserConfig() {
 	config := viper.New()
 	config.AddConfigPath("./config")
 	config.SetConfigName("config")
-	config.SetConfigType("ini")
+	config.SetConfigType("toml")
 
 	if err := config.ReadInConfig(); err != nil {
 		panic(err)
 	}
 
-	DbConfig.Host = config.GetString("db.host")
-	DbConfig.Port = config.GetInt64("db.port")
-	DbConfig.User = config.GetString("db.user")
-	DbConfig.Passwd = config.GetString("db.passwd")
-	DbConfig.Database = config.GetString("db.database")
+	DbConfig.Host = config.GetString("mysql.host")
+	DbConfig.Port = config.GetInt64("mysql.port")
+	DbConfig.User = config.GetString("mysql.user")
+	DbConfig.Passwd = config.GetString("mysql.passwd")
+	DbConfig.Database = config.GetString("mysql.database")
 }
