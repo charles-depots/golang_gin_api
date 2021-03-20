@@ -12,8 +12,8 @@ var (
 	DB *gorm.DB
 )
 
+// Initialize mysql connection
 func InitMySQLCon() (err error) {
-	// 可以在api包里设置成init函数
 	config.ParserConfig()
 	connStr := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", config.DbConfig.User, config.DbConfig.Passwd, config.DbConfig.Host, config.DbConfig.Port, config.DbConfig.Database)
 	fmt.Println(connStr)

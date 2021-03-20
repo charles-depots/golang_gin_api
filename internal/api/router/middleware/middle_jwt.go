@@ -16,17 +16,17 @@ var (
 	TokenNotValidYet error  = errors.New("Token not active yet")
 	TokenMalformed   error  = errors.New("That's not even a token")
 	TokenInvalid     error  = errors.New("Couldn't handle this token:")
-	SignKey          string = "charles.shao.101" // 签名信息应该设置成动态从库中获取
+	SignKey          string = "charles.shao.101" // The signature information should be set to be dynamically obtained from the library
 )
 
-// JWTAuth 中间件，检查token
+// JWTAuth Middleware, check token
 func JWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.Request.Header.Get("Authorization")
 		if token == "" {
 			c.JSON(http.StatusOK, gin.H{
 				"status": -1,
-				"msg":    "请求未携带token，无权限访问",
+				"msg":    "The request does not carry the token and has no permission to access",
 				"data":   nil,
 			})
 			c.Abort()
@@ -35,22 +35,22 @@ func JWTAuth() gin.HandlerFunc {
 
 		log.Print("get token: ", token)
 		j := NewJWT()
-		// 解析token中包含的相关信息
+		// Parse the relevant information contained in the token
 		claims, err := j.ParserToken(token)
 
 		fmt.Println(claims, err)
 		if err != nil {
-			// token过期
+			// token expired
 			if err == TokenExpired {
 				c.JSON(http.StatusOK, gin.H{
 					"status": -1,
-					"msg":    "token授权已过期，请重新申请授权",
+					"msg":    "The token authorization has expired, please reapply for authorization",
 					"data":   nil,
 				})
 				c.Abort()
 				return
 			}
-			// 其他错误
+			// Other errors
 			c.JSON(http.StatusOK, gin.H{
 				"status": -1,
 				"msg":    err.Error(),
@@ -60,34 +60,34 @@ func JWTAuth() gin.HandlerFunc {
 			return
 		}
 
-		// 解析到具体的claims相关信息
+		// Resolve to specific claims related information
 		c.Set("claims", claims)
 
 	}
 }
 
-// JWT基本数据结构
-// 签名的signkey
+// JWT basic data structure
+// Signed signkey
 type JWT struct {
 	SigningKey []byte
 }
 
-// 定义载荷
+// Define claim
 type CustomClaims struct {
 	Name  string `json:"userName"`
 	Email string `json:"email"`
-	// StandardClaims结构体实现了Claims接口(Valid()函数)
+	// StandardClaim structure implements the Claims interface (Valid() function)
 	jwt.StandardClaims
 }
 
-// 初始化JWT实例
+// Initialize the JWT instance
 func NewJWT() *JWT {
 	return &JWT{
 		[]byte(GetSignKey()),
 	}
 }
 
-// 获取signkey(这里写死成一个变量了)
+// Get the signkey
 func GetSignKey() string {
 	return SignKey
 }
@@ -97,22 +97,22 @@ func SetSignKey(key string) string {
 	return SignKey
 }
 
-// 创建Token(基于用户的基本信息claims)
-// 使用HS256算法进行token生成
-// 使用用户基本信息claims以及签名key(signkey)生成token
+// Create Token (based on the user's basic information claims)
+// Use HS256 algorithm for token generation
+// Use user basic information claims and signature key (signkey) to generate token
 func (j *JWT) CreateToken(claims CustomClaims) (string, error) {
 	// https://gowalker.org/github.com/dgrijalva/jwt-go#Token
-	// 返回一个token的结构体指针
+	// Return a token structure pointer
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(j.SigningKey)
 }
 
-// token解析
+// Token parsing
 // Couldn't handle this token:
 func (j *JWT) ParserToken(tokenString string) (*CustomClaims, error) {
 	// https://gowalker.org/github.com/dgrijalva/jwt-go#ParseWithClaims
-	// 输入用户自定义的Claims结构体对象,token,以及自定义函数来解析token字符串为jwt的Token结构体指针
-	// Keyfunc是匿名函数类型: type Keyfunc func(*Token) (interface{}, error)
+	// Enter the user-defined Claims structure object, token, and custom function to parse the token string into jwt's Token structure pointer
+	// Keyfunc is an anonymous function type: type Keyfunc func(*Token) (interface{}, error)
 	// func ParseWithClaims(tokenString string, claims Claims, keyFunc Keyfunc) (*Token, error) {}
 	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return j.SigningKey, nil
@@ -121,26 +121,25 @@ func (j *JWT) ParserToken(tokenString string) (*CustomClaims, error) {
 	fmt.Println(token, err)
 	if err != nil {
 		// https://gowalker.org/github.com/dgrijalva/jwt-go#ValidationError
-		// jwt.ValidationError 是一个无效token的错误结构
+		// jwt.ValidationError is an incorrect structure of an invalid token
 		if ve, ok := err.(*jwt.ValidationError); ok {
-			// ValidationErrorMalformed是一个uint常量，表示token不可用
+			// ValidationErrorMalformed is a uint constant, indicating that the token is not available
 			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
 				return nil, TokenMalformed
 				// ValidationErrorExpired表示Token过期
 			} else if ve.Errors&jwt.ValidationErrorExpired != 0 {
 				return nil, TokenExpired
-				// ValidationErrorNotValidYet表示无效token
+				// ValidationErrorNotValidYet indicates invalid token
 			} else if ve.Errors&jwt.ValidationErrorNotValidYet != 0 {
 				return nil, TokenNotValidYet
 			} else {
 				return nil, TokenInvalid
 			}
-
 		}
 	}
 
-	// 将token中的claims信息解析出来和用户原始数据进行校验
-	// 做以下类型断言，将token.Claims转换成具体用户自定义的Claims结构体
+	// Parse out the claims information in the token and verify the original data of the user
+	// Make the following type assertions to convert token.Claims into a specific user-defined Claims structure
 	if claims, ok := token.Claims.(*CustomClaims); ok && token.Valid {
 		return claims, nil
 	}
@@ -149,27 +148,27 @@ func (j *JWT) ParserToken(tokenString string) (*CustomClaims, error) {
 
 }
 
-// 更新Token
+// Update Token
 func (j *JWT) UpdateToken(tokenString string) (string, error) {
-	// TimeFunc为一个默认值是time.Now的当前时间变量,用来解析token后进行过期时间验证
-	// 可以使用其他的时间值来覆盖
+	// TimeFunc is a current time variable whose default value is time.Now, which is used to verify the expiration time after parsing the token
+	// You can use other time values to override
 	jwt.TimeFunc = func() time.Time {
 		return time.Unix(0, 0)
 	}
 
-	// 拿到token基础数据
+	// Acquiring basic data token
 	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return j.SigningKey, nil
 
 	})
 
-	// 校验token当前还有效
+	// Current also effective verification token
 	if claims, ok := token.Claims.(*CustomClaims); ok && token.Valid {
 		jwt.TimeFunc = time.Now
-		// 修改Claims的过期时间(int64)
+		// Modify the expiration time of Claims(int64)
 		// https://gowalker.org/github.com/dgrijalva/jwt-go#StandardClaims
 		claims.StandardClaims.ExpiresAt = time.Now().Add(1 * time.Hour).Unix()
 		return j.CreateToken(*claims)
 	}
-	return "", fmt.Errorf("token获取失败:%v", err)
+	return "", fmt.Errorf("Token acquisition failed:%v", err)
 }
