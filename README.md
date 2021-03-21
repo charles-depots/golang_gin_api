@@ -6,6 +6,7 @@ Integrated components:
 *  Support [jwt](https://github.com/dgrijalva/jwt-go) interface authentication 
 *  Support [zap](https://go.uber.org/zap) log collection
 *  Support [viper](https://github.com/spf13/viper) configuration file parsing
+*  Support [go-redis](https://github.com/go-redis/redis) will start a redis-server and run the test cases.
 
 
 ## Document
