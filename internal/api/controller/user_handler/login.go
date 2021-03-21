@@ -4,7 +4,6 @@ import (
 	_ "fmt"
 	"golang-gin-api/internal/api/model/user"
 	md "golang-gin-api/internal/api/router/middleware"
-	"log"
 	"net/http"
 	"time"
 
@@ -33,7 +32,6 @@ func (h *handler) Login(c *gin.Context) {
 				"data":   nil,
 			})
 		}
-
 	} else {
 		c.JSON(http.StatusOK, gin.H{
 			"status": -1,
@@ -69,7 +67,6 @@ func generateToken(c *gin.Context, user user.User) {
 		})
 	}
 
-	log.Println(token)
 	// Get user related data
 	data := LoginResult{
 		Name:  user.Name,

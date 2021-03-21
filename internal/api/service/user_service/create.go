@@ -12,14 +12,17 @@ type RegisterInfo struct {
 	Email string `json:"email"`
 }
 
-func (u *userSer) Create(userRes *RegisterInfo) error {
-	model := user.NewModel()
-	model.Name = userRes.Name
-	model.Phone = userRes.Phone
-	model.Pwd = userRes.Pwd
-	model.Email = userRes.Email
+func (u *UserSer) Create(userRes *RegisterInfo) error {
+	userModel := user.NewModel()
+	userModel.Name = userRes.Name
+	userModel.Phone = userRes.Phone
+	userModel.Pwd = userRes.Pwd
+	userModel.Email = userRes.Email
 
-	err := model.Insert()
+	err := userModel.Insert()
+	if err != nil {
+		return err
+	}
 
-	return err
+	return nil
 }

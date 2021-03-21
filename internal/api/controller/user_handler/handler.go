@@ -9,8 +9,6 @@ import (
 var _ Handler = (*handler)(nil)
 
 type Handler interface {
-	// i 为了避免被其他包实现
-	i()
 	RegisterUser(c *gin.Context)
 	Login(c *gin.Context)
 	GetValidate(c *gin.Context)
@@ -22,7 +20,8 @@ type handler struct {
 }
 
 func New(logger *zap.Logger) Handler {
-	return &handler{logger: logger}
+	return &handler{
+		logger:      logger,
+		userService: user_service.NewUserService(logger),
+	}
 }
-
-func (h *handler) i() {}

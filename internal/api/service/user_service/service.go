@@ -2,15 +2,16 @@ package user_service
 
 import "go.uber.org/zap"
 
-var _ UserService = (*userSer)(nil)
+var _ UserService = (*UserSer)(nil)
 
 type UserService interface {
 	Create(userRes *RegisterInfo) error
 }
 
-type userSer struct {
+type UserSer struct {
+	logger *zap.Logger
 }
 
 func NewUserService(logger *zap.Logger) UserService {
-	return &userSer{}
+	return &UserSer{}
 }

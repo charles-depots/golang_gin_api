@@ -35,9 +35,7 @@ func Register(username, pwd string, phone string, email string) error {
 		Phone: phone,
 		Email: email,
 	}
-	insertErr := user.Insert()
-	return insertErr
-
+	return user.Insert()
 }
 
 // Check user information
@@ -75,5 +73,6 @@ func LoginCheck(login LoginReq) (bool, User, error) {
 	if !userExist {
 		return userExist, userData, fmt.Errorf("%s", "The login information is wrong")
 	}
+
 	return userExist, userData, nil
 }
