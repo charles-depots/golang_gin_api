@@ -5,13 +5,10 @@ import (
 	"go.uber.org/zap"
 	"golang-gin-api/config"
 	"golang-gin-api/internal/api/router"
+	"golang-gin-api/pkg/cache"
 	"golang-gin-api/pkg/db"
 	"golang-gin-api/pkg/logger"
 )
-
-func init() {
-
-}
 
 func main() {
 	// Initialize zap logger
@@ -30,6 +27,13 @@ func main() {
 	if dbErr != nil {
 		loggers.Fatal("new db err", zap.Error(dbErr))
 	}
+
+	// Initialize the redis connection
+	redisClient, err := cache.InitRedisClient()
+	if err != nil {
+		loggers.Fatal("new db err", zap.Error(err))
+	}
+	fmt.Println(redisClient)
 
 	router.InitHttpServer(loggers)
 }

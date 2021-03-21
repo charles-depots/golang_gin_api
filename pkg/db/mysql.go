@@ -14,8 +14,8 @@ var (
 
 // Initialize mysql connection
 func InitMySQLCon() (err error) {
-	config.ParserConfig()
-	connStr := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", config.DbConfig.User, config.DbConfig.Passwd, config.DbConfig.Host, config.DbConfig.Port, config.DbConfig.Database)
+	mysql := config.GetConfig().MySQL
+	connStr := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", mysql.User, mysql.Passwd, mysql.Host, mysql.Port, mysql.Database)
 	fmt.Println(connStr)
 	DB, err = gorm.Open("mysql", connStr)
 

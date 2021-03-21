@@ -5,33 +5,46 @@ import (
 	"github.com/spf13/viper"
 )
 
-type DBConfig struct {
-	Host     string `json:"host"`
-	Port     int64  `json:"port"`
-	User     string `json:"user"`
-	Passwd   string `json:"passwd"`
-	Database string `json:"database"`
-}
-
 var (
-	DbConfig DBConfig
+	config = new(Config)
 )
 
-func ParserConfig() {
-	config := viper.New()
-	config.AddConfigPath("./config")
-	config.SetConfigName("config")
-	config.SetConfigType("toml")
+type Config struct {
+	MySQL struct {
+		Host     string `json:"host"`
+		Port     int64  `json:"port"`
+		User     string `json:"user"`
+		Passwd   string `json:"passwd"`
+		Database string `json:"database"`
+	} `toml:"mysql"`
 
-	if err := config.ReadInConfig(); err != nil {
-		panic(err)
+	Redis struct {
+		Addr         string `toml:"addr"`
+		Pass         string `toml:"pass"`
+		Db           int    `toml:"db"`
+		MaxRetries   int    `toml:"maxRetries"`
+		PoolSize     int    `toml:"poolSize"`
+		MinIdleConns int    `toml:"minIdleConns"`
+	} `toml:"redis"`
+}
+
+func init() {
+	viperInit := viper.New()
+	viperInit.AddConfigPath("./config")
+	viperInit.SetConfigName("config")
+	viperInit.SetConfigType("toml")
+
+	if err := viperInit.ReadInConfig(); err != nil {
+		fmt.Println(err)
 	}
 
-	DbConfig.Host = config.GetString("mysql.host")
-	DbConfig.Port = config.GetInt64("mysql.port")
-	DbConfig.User = config.GetString("mysql.user")
-	DbConfig.Passwd = config.GetString("mysql.passwd")
-	DbConfig.Database = config.GetString("mysql.database")
+	if err := viperInit.Unmarshal(config); err != nil {
+		fmt.Println(err)
+	}
+}
+
+func GetConfig() Config {
+	return *config
 }
 
 func ProjectName() string {

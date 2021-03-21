@@ -1,6 +1,14 @@
 [mysql]
-host      = '127.0.0.1'
-port      = '3306'
-user      = 'root'
-passwd    = 'admin123.'
-database  = 'golang_gin_api'
+host = '127.0.0.1'              # MySQL host
+port = '3306'                   # Post
+user = 'root'                   # Username
+passwd = 'admin123.'            # Password
+database = 'golang_gin_api'     # Database
+
+[redis]
+addr = '127.0.0.1:6379'         # Redis addr:port
+pass = 'root'                   # Password
+db = 0                          # The serial number starts at 0, the default is 0, can not be set
+maxRetries = 3                  # The maximum number of retries when the command fails. Default is 0, i.e. no retry
+poolSize = 10                   # Maximum number of connections in the connection pool. Default is number of CPUs * 10
+minIdleConns = 5                # Minimum number of free connections
