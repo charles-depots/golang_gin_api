@@ -2,6 +2,7 @@ package user_handler
 
 import (
 	"github.com/gin-gonic/gin"
+	"golang-gin-api/internal/api/code"
 	"golang-gin-api/internal/api/service/user_service"
 	"net/http"
 )
@@ -21,9 +22,9 @@ func (h *handler) RegisterUser(c *gin.Context) {
 	bindErr := c.BindJSON(&registerInfo)
 	if bindErr != nil {
 		c.JSON(http.StatusOK, gin.H{
-			"status": -1,
-			"msg":    "Failed to parse user registration data" + bindErr.Error(),
-			"data":   nil,
+			"code":    code.UserParamErrorCode,
+			"message": code.GetText(code.UserParamErrorCode) + bindErr.Error(),
+			"data":    nil,
 		})
 	}
 	createUserData := new(user_service.RegisterInfo)
@@ -35,14 +36,14 @@ func (h *handler) RegisterUser(c *gin.Context) {
 
 	if errUserCreate != nil {
 		c.JSON(http.StatusOK, gin.H{
-			"status": -1,
-			"msg":    "Failed to parse user registration data" + errUserCreate.Error(),
+			"status": code.UserCreateErrorCode,
+			"msg":    code.GetText(code.UserCreateErrorCode) + errUserCreate.Error(),
 			"data":   nil,
 		})
 	} else {
 		c.JSON(http.StatusOK, gin.H{
-			"status": 0,
-			"msg":    "success ",
+			"status": code.UserCreateCode,
+			"msg":    code.GetText(code.UserCreateCode),
 			"data":   nil,
 		})
 	}
