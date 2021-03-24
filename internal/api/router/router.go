@@ -6,9 +6,10 @@ import (
 	userHandler "golang-gin-api/internal/api/controller/user_handler"
 	"golang-gin-api/internal/api/model/user"
 	md "golang-gin-api/internal/api/router/middleware"
+	"github.com/go-redis/redis/v7"
 )
 
-func InitHttpServer(logger *zap.Logger) {
+func InitHttpServer(logger *zap.Logger, redis *redis.Client) {
 	if logger == nil {
 		return
 	}
@@ -21,7 +22,7 @@ func InitHttpServer(logger *zap.Logger) {
 	middlesJWT := md.JWTAuth(logger)
 
 	// User controller
-	userHandler := userHandler.New(logger)
+	userHandler := userHandler.New(logger, redis)
 
 	v1 := router.Group("/V1/internal")
 	{

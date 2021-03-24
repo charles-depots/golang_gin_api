@@ -33,7 +33,6 @@ func main() {
 	if err != nil {
 		loggers.Fatal("new db err", zap.Error(err))
 	}
-	fmt.Println(redisClient)
 
-	router.InitHttpServer(loggers)
+	router.InitHttpServer(loggers, redisClient)
 }

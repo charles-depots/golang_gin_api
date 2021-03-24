@@ -21,3 +21,6 @@ func InitModel() {
 	mysql.DB.AutoMigrate(&User{})
 }
 
+func NewModel() *User {
+	return new(User)
+}

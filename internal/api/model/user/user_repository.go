@@ -5,16 +5,6 @@ import (
 	mysql "golang-gin-api/pkg/db"
 )
 
-// User login request parameters
-type LoginReq struct {
-	Name string `json:"name"`
-	Pwd  string `json:"password"`
-}
-
-func NewModel() *User {
-	return new(User)
-}
-
 // Insert data into the user table
 func (user *User) Insert() error {
 	return mysql.DB.Model(&User{}).Create(&user).Error
@@ -38,7 +28,7 @@ func Register(username, pwd string, phone string, email string) error {
 	return user.Insert()
 }
 
-// Check user information
+// Check user exist
 func CheckUser(username string) bool {
 
 	result := false
@@ -53,26 +43,18 @@ func CheckUser(username string) bool {
 	return result
 }
 
-// Login information verification
-func LoginCheck(login LoginReq) (bool, User, error) {
+// Check user information by username
+func CheckUserByName(username string) (bool, User, error) {
 	userData := User{}
 	userExist := false
 
 	var user User
-	dbErr := mysql.DB.Where("name = ?", login.Name).Find(&user).Error
-
-	if dbErr != nil {
-		return userExist, userData, dbErr
-	}
-	if login.Name == user.Name && login.Pwd == user.Pwd {
+	dbResult := mysql.DB.Where("name = ?", username).Find(&user)
+	if dbResult.Error != nil {
+		return userExist, userData, dbResult.Error
+	} else {
 		userExist = true
-		userData.Name = user.Name
-		userData.Email = user.Email
 	}
 
-	if !userExist {
-		return userExist, userData, fmt.Errorf("%s", "The login information is wrong")
-	}
-
-	return userExist, userData, nil
+	return userExist, user, nil
 }

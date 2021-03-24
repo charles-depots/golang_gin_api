@@ -4,6 +4,7 @@ import (
 	_ "fmt"
 	"golang-gin-api/internal/api/model/user"
 	md "golang-gin-api/internal/api/router/middleware"
+	"golang-gin-api/internal/api/service/user_service"
 	"net/http"
 	"time"
 
@@ -20,11 +21,14 @@ type LoginResult struct {
 // Login interface, user name and password login
 // name,password
 func (h *handler) Login(c *gin.Context) {
-	var loginReq user.LoginReq
+	var loginReq user_service.LoginReq
 	if c.BindJSON(&loginReq) == nil {
-		isPass, user, err := user.LoginCheck(loginReq)
+		login := new(user_service.LoginReq)
+		login.Name = loginReq.Name
+		login.Pwd = loginReq.Pwd
+		isPass, user, err := h.userService.LoginCheck(login)
 		if isPass {
-			generateToken(c, user)
+			generateToken(h, c, user)
 		} else {
 			c.JSON(http.StatusOK, gin.H{
 				"status": -1,
@@ -42,7 +46,7 @@ func (h *handler) Login(c *gin.Context) {
 }
 
 // Token generator
-func generateToken(c *gin.Context, user user.User) {
+func generateToken(h *handler, c *gin.Context, user user.User) {
 	// Construct SignKey: A value is required for signing and de-signing
 	j := md.NewJWT()
 
@@ -66,6 +70,7 @@ func generateToken(c *gin.Context, user user.User) {
 			"data":   nil,
 		})
 	}
+	h.redis.Set(user.Email, token, 10*time.Second)
 
 	// Get user related data
 	data := LoginResult{
