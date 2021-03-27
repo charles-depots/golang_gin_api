@@ -26,6 +26,11 @@ type Config struct {
 		PoolSize     int    `toml:"poolSize"`
 		MinIdleConns int    `toml:"minIdleConns"`
 	} `toml:"redis"`
+
+	Rate struct {
+		Limit int `toml:"limit"`
+		Burst int `toml:"burst"`
+	} `toml:"rate"`
 }
 
 func init() {

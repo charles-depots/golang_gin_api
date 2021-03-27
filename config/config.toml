@@ -12,3 +12,7 @@ db = 0                          # The serial number starts at 0, the default is 
 maxRetries = 3                  # The maximum number of retries when the command fails. Default is 0, i.e. no retry
 poolSize = 10                   # Maximum number of connections in the connection pool. Default is number of CPUs * 10
 minIdleConns = 5                # Minimum number of free connections
+
+[rate]
+limit = 60                      # Limiter that allows events up to rate r and permits
+burst = 10                      # Burst returns the maximum burst size. Burst is the maximum number of tokens

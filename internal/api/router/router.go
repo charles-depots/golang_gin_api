@@ -2,11 +2,12 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis/v7"
 	"go.uber.org/zap"
+	testHandler "golang-gin-api/internal/api/controller/test_handler"
 	userHandler "golang-gin-api/internal/api/controller/user_handler"
 	"golang-gin-api/internal/api/model/user"
 	md "golang-gin-api/internal/api/router/middleware"
-	"github.com/go-redis/redis/v7"
 )
 
 func InitHttpServer(logger *zap.Logger, redis *redis.Client) {
@@ -16,6 +17,16 @@ func InitHttpServer(logger *zap.Logger, redis *redis.Client) {
 
 	// Initialize go instance
 	router := gin.Default()
+
+	// Test controller
+	middleRateLimit := md.RateLimitMiddleware()
+	testHandler := testHandler.New()
+	test := router.Group("/V1/internal/test", middleRateLimit)
+	{
+		test.GET("/rate-limit", testHandler.RateLimitTest) // Testing rate limit for request
+	}
+
+	// Init user model
 	user.InitModel()
 
 	// JWT middle
@@ -23,11 +34,10 @@ func InitHttpServer(logger *zap.Logger, redis *redis.Client) {
 
 	// User controller
 	userHandler := userHandler.New(logger, redis)
-
-	v1 := router.Group("/V1/internal")
+	customer := router.Group("/V1/internal/customer")
 	{
-		v1.POST("/customer/register", userHandler.RegisterUser)
-		v1.POST("/customer/token", userHandler.Login)
+		customer.POST("/register", userHandler.RegisterUser)
+		customer.POST("/token", userHandler.Login)
 	}
 
 	// secure v1
@@ -35,5 +45,6 @@ func InitHttpServer(logger *zap.Logger, redis *redis.Client) {
 	{
 		sv1.GET("/userinfo", userHandler.GetUserInfo)
 	}
+
 	router.Run(":8080")
 }
