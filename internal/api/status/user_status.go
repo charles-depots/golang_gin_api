@@ -1,4 +1,4 @@
-package code
+package status
 
 type Failure struct {
 	Code    int    `json:"code"`
@@ -29,8 +29,4 @@ var codeText = map[int]string{
 	UserLoginErrorCode:  "User login failed, please login again",
 	UserTokenErrorCode:  "Your account is private. Access token been expired",
 	UserOtherErrorCode:  "An unknown error has occurred",
-}
-
-func GetText(code int) string {
-	return codeText[code]
 }

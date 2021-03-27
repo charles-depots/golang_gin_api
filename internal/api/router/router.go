@@ -33,7 +33,7 @@ func InitHttpServer(logger *zap.Logger, redis *redis.Client) {
 	// secure v1
 	sv1 := router.Group("/V1/internal/auth", middlesJWT)
 	{
-		sv1.GET("/validate", userHandler.GetValidate)
+		sv1.GET("/userinfo", userHandler.GetUserInfo)
 	}
 	router.Run(":8080")
 }

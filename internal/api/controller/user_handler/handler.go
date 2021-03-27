@@ -12,7 +12,7 @@ var _ Handler = (*handler)(nil)
 type Handler interface {
 	RegisterUser(c *gin.Context)
 	Login(c *gin.Context)
-	GetValidate(c *gin.Context)
+	GetUserInfo(c *gin.Context)
 }
 
 type handler struct {

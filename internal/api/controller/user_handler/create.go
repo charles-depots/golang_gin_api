@@ -2,8 +2,8 @@ package user_handler
 
 import (
 	"github.com/gin-gonic/gin"
-	"golang-gin-api/internal/api/code"
 	"golang-gin-api/internal/api/service/user_service"
+	"golang-gin-api/internal/api/status"
 	"net/http"
 )
 
@@ -22,8 +22,8 @@ func (h *handler) RegisterUser(c *gin.Context) {
 	bindErr := c.BindJSON(&registerInfo)
 	if bindErr != nil {
 		c.JSON(http.StatusOK, gin.H{
-			"code":    code.UserParamErrorCode,
-			"message": code.GetText(code.UserParamErrorCode) + bindErr.Error(),
+			"code":    status.UserParamErrorCode,
+			"message": status.GetStatusMessage(status.UserParamErrorCode) + bindErr.Error(),
 			"data":    nil,
 		})
 	}
@@ -36,14 +36,14 @@ func (h *handler) RegisterUser(c *gin.Context) {
 
 	if errUserCreate != nil {
 		c.JSON(http.StatusOK, gin.H{
-			"status": code.UserCreateErrorCode,
-			"msg":    code.GetText(code.UserCreateErrorCode) + errUserCreate.Error(),
+			"status": status.UserCreateErrorCode,
+			"msg":    status.GetStatusMessage(status.UserCreateErrorCode) + errUserCreate.Error(),
 			"data":   nil,
 		})
 	} else {
 		c.JSON(http.StatusOK, gin.H{
-			"status": code.UserCreateCode,
-			"msg":    code.GetText(code.UserCreateCode),
+			"status": status.UserCreateCode,
+			"msg":    status.GetStatusMessage(status.UserCreateCode),
 			"data":   nil,
 		})
 	}
