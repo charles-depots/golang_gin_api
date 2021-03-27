@@ -1,0 +1,123 @@
+{
+	"info": {
+		"_postman_id": "642d1584-096f-4712-b1d6-956afb1927e2",
+		"name": "Gin API Integration (GO)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "用户 - 创建 / Customer - Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"charles.shao1\",\n    \"password\": \"admin20211\",\n    \"email\": \"charles.shaoyl@gmail.com1\",\n    \"phone\": \"199953609281\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/V1/internal/customer/register",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"V1",
+						"internal",
+						"customer",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "用户 - 登陆 / Customer - Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"charles.shao\",\n    \"password\": \"admin2021\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/V1/internal/customer/token",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"V1",
+						"internal",
+						"customer",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "用户 - 验证 / Customer - UserInfo",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhb1GciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6ImNoYXJsZXMuc2hhbyIsImVtYWlsIjoiY2hhcmxlcy5zaGFveWxAZ21haWwuY29tIiwiZXhwIjoxNjE2ODExODc3LCJpc3MiOiJjaGFybGVzLjEwMSIsIm5iZiI6MTYxNjgwNzI3N30.HkVkDHjZkKDRZ-9y4Vj5rUUt40m1uvbP-hZsSvgU5wE",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://{{baseUrl}}/V1/internal/auth/userinfo",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"V1",
+						"internal",
+						"auth",
+						"userinfo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "请求限流 / Rate Limiter",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/V1/internal/test/rate-limit",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"V1",
+						"internal",
+						"test",
+						"rate-limit"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
