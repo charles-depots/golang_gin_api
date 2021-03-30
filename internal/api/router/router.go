@@ -8,9 +8,10 @@ import (
 	userHandler "golang-gin-api/internal/api/controller/user_handler"
 	"golang-gin-api/internal/api/model/user"
 	md "golang-gin-api/internal/api/router/middleware"
+	"golang-gin-api/pkg/rabbitmq"
 )
 
-func InitHttpServer(logger *zap.Logger, redis *redis.Client) {
+func InitHttpServer(logger *zap.Logger, redis *redis.Client, rabbitmq *rabbitmq.RabbitMQ) {
 	if logger == nil {
 		return
 	}

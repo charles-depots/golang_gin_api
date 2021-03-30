@@ -31,6 +31,13 @@ type Config struct {
 		Limit int `toml:"limit"`
 		Burst int `toml:"burst"`
 	} `toml:"rate"`
+
+	RabbitMQ struct {
+		Addr   string `toml:"addr"`
+		User   string `toml:"user"`
+		Passwd string `toml:"password"`
+		Vhost  string `toml:"vhost"`
+	} `toml:"rate"`
 }
 
 func init() {

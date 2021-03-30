@@ -16,3 +16,9 @@ minIdleConns = 5                # Minimum number of free connections
 [rate]
 limit = 60                      # Limiter that allows events up to rate r and permits
 burst = 10                      # Burst returns the maximum burst size. Burst is the maximum number of tokens
+
+[rabbitmq]
+addr = "172.16.53.200:5672"     # RabbitMQ host
+user = "admin"                  # Username
+passwd = "123456"               # Password
+vhost = "charles"               # Default vhost

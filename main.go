@@ -8,6 +8,7 @@ import (
 	"golang-gin-api/pkg/cache"
 	"golang-gin-api/pkg/db"
 	"golang-gin-api/pkg/logger"
+	"golang-gin-api/pkg/rabbitmq"
 )
 
 func main() {
@@ -34,5 +35,11 @@ func main() {
 		loggers.Fatal("new db err", zap.Error(err))
 	}
 
-	router.InitHttpServer(loggers, redisClient)
+	// Initialize the rabbitmq connection
+	rabbitMQClient, err := rabbitmq.InitRabbitMQ("charles", "", "")
+	if err != nil {
+		loggers.Fatal("RabbitMq connection error", zap.Error(err))
+	}
+
+	router.InitHttpServer(loggers, redisClient, rabbitMQClient)
 }
