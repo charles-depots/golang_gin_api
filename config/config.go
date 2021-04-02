@@ -36,7 +36,6 @@ type Config struct {
 		Addr   string `toml:"addr"`
 		User   string `toml:"user"`
 		Passwd string `toml:"password"`
-		Vhost  string `toml:"vhost"`
 	} `toml:"rate"`
 }
 
