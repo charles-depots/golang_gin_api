@@ -6,6 +6,193 @@
 	},
 	"item": [
 		{
+			"name": "RabbitMQ",
+			"item": [
+				{
+					"name": "声明 - 队列 / Declare - Queue",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"test\",\n    \"durable\": false,\n    \"autodelete\": true,\n    \"exclusive\": false,\n    \"nowait\": false\n}"
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/V1/internal/mq/queue",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"V1",
+								"internal",
+								"mq",
+								"queue"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "声明 - 交换器 / Declare - Exchange",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"test\",\n    \"type\": \"direct\",\n    \"durable\": false,\n    \"autodelete\": true,\n    \"nowait\": false\n}"
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/V1/internal/mq/exchange",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"V1",
+								"internal",
+								"mq",
+								"exchange"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "绑定 - 队列 / Binding - Queue",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"queue\": \"test\",\n    \"exchange\": \"test\",\n    \"nowait\": false,\n    \"keys\": [\n        \"router\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/V1/internal/queue/bind",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"V1",
+								"internal",
+								"queue",
+								"bind"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "发布 - 消息 / Publish -Message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"exchange\": \"test\",\n    \"key\": \"router\",\n    \"deliverymode\": 2,\n    \"priority\": 3,\n    \"body\": \"this is a message from test.\"\n}"
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/V1/internal/mq/publish",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"V1",
+								"internal",
+								"mq",
+								"publish"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "消费 - 消息 / Consume - Meaage",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseUrl}}/V1/internal/mq/queue?name=test",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"V1",
+								"internal",
+								"mq",
+								"queue"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "test"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "删除 - 队列 / Delete Queue",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"test\"\n}"
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/V1/internal/mq/queue",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"V1",
+								"internal",
+								"mq",
+								"queue"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "用户 - 创建 / Customer - Register",
 			"request": {
 				"method": "POST",

@@ -29,7 +29,7 @@ func InitHttpServer(logger *zap.Logger, redis *redis.Client) {
 
 	// RabbitMQ controller
 	mqCtl := mqHandler.MqHandler()
-	mq := router.Group("/V1/internal", middleRateLimit)
+	mq := router.Group("/V1/internal/mq", middleRateLimit)
 	{
 		mq.POST("/exchange", func(c *gin.Context) {
 			mqCtl.ExchangeHandler(c.Writer, c.Request)
