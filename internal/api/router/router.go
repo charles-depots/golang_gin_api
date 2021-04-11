@@ -7,7 +7,6 @@ import (
 	mqHandler "golang-gin-api/internal/api/controller/queue_handler"
 	testHandler "golang-gin-api/internal/api/controller/test_handler"
 	userHandler "golang-gin-api/internal/api/controller/user_handler"
-	"golang-gin-api/internal/api/model/user"
 	md "golang-gin-api/internal/api/router/middleware"
 )
 
@@ -54,9 +53,6 @@ func InitHttpServer(logger *zap.Logger, redis *redis.Client) {
 		})
 	}
 
-	// Init user model
-	user.InitModel()
-
 	// JWT middle
 	middlesJWT := md.JWTAuth(logger)
 
@@ -64,14 +60,20 @@ func InitHttpServer(logger *zap.Logger, redis *redis.Client) {
 	userHandler := userHandler.New(logger, redis)
 	customer := router.Group("/V1/internal/customer")
 	{
-		customer.POST("/register", userHandler.RegisterUser)
-		customer.POST("/token", userHandler.Login)
+		customer.POST("/register", func(ctx *gin.Context) {
+			userHandler.RegisterUser(ctx, ctx.Request)
+		})
+		customer.POST("/token", func(ctx *gin.Context) {
+			userHandler.RegisterUser(ctx, ctx.Request)
+		})
 	}
 
 	// secure v1
 	sv1 := router.Group("/V1/internal/auth", middlesJWT)
 	{
-		sv1.GET("/userinfo", userHandler.GetUserInfo)
+		sv1.GET("/userinfo",func(ctx *gin.Context) {
+			userHandler.GetUserInfo(ctx)
+		})
 	}
 
 	router.Run(":8080")

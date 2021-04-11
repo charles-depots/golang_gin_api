@@ -1,14 +1,13 @@
 package user_handler
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
-	"golang-gin-api/internal/api/service/user_service"
+	"golang-gin-api/internal/api/model/user/dbinit"
 	"golang-gin-api/internal/api/status"
 	"net/http"
 )
 
-// User registration information
-// Note: Registration information can use Gin's internal verification tool
 type RegisterInfo struct {
 	Phone string `json:"phone"`
 	Name  string `json:"name"`
@@ -17,31 +16,22 @@ type RegisterInfo struct {
 }
 
 // User registration interface
-func (h *handler) RegisterUser(c *gin.Context) {
-	var registerInfo = new(RegisterInfo)
-	bindErr := c.BindJSON(&registerInfo)
-	if bindErr != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"code":    status.UserParamErrorCode,
-			"message": status.GetStatusMessage(status.UserParamErrorCode) + bindErr.Error(),
-			"data":    nil,
-		})
+func (h *handler) RegisterUser(ctx *gin.Context, req *http.Request) {
+	var protoReq dbinit.User
+
+	if err := req.ParseForm(); err != nil {
+		fmt.Println(err)
 	}
-	createUserData := new(user_service.RegisterInfo)
-	createUserData.Name = registerInfo.Name
-	createUserData.Pwd = registerInfo.Pwd
-	createUserData.Phone = registerInfo.Phone
-	createUserData.Email = registerInfo.Email
-	errUserCreate := h.userService.Create(createUserData)
+	errUserCreate := h.userService.CreateUser(ctx, &protoReq)
 
 	if errUserCreate != nil {
-		c.JSON(http.StatusOK, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"status": status.UserCreateErrorCode,
 			"msg":    status.GetStatusMessage(status.UserCreateErrorCode) + errUserCreate.Error(),
 			"data":   nil,
 		})
 	} else {
-		c.JSON(http.StatusOK, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"status": status.UserCreateCode,
 			"msg":    status.GetStatusMessage(status.UserCreateCode),
 			"data":   nil,

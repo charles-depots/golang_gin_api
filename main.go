@@ -6,7 +6,7 @@ import (
 	"golang-gin-api/config"
 	"golang-gin-api/internal/api/router"
 	"golang-gin-api/pkg/cache"
-	"golang-gin-api/pkg/db"
+	"golang-gin-api/pkg/db/mysql"
 	"golang-gin-api/pkg/logger"
 )
 
@@ -23,7 +23,8 @@ func main() {
 	defer loggers.Sync()
 
 	// Initialize the database connection
-	dbErr := db.InitMySQLCon()
+	mysql.Connect()
+	dbErr := mysql.InitData()
 	if dbErr != nil {
 		loggers.Fatal("new db err", zap.Error(dbErr))
 	}

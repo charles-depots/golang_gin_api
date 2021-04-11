@@ -2,9 +2,8 @@ package user_handler
 
 import (
 	_ "fmt"
-	"golang-gin-api/internal/api/model/user"
+	"golang-gin-api/internal/api/model/user/dbinit"
 	md "golang-gin-api/internal/api/router/middleware"
-	"golang-gin-api/internal/api/service/user_service"
 	"net/http"
 	"time"
 
@@ -12,41 +11,32 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Login result
 type LoginResult struct {
 	Token string `json:"token"`
 	Name  string `json:"name"`
 }
 
-// Login interface, user name and password login
-// name,password
-func (h *handler) Login(c *gin.Context) {
-	var loginReq user_service.LoginReq
-	if c.BindJSON(&loginReq) == nil {
-		login := new(user_service.LoginReq)
-		login.Name = loginReq.Name
-		login.Pwd = loginReq.Pwd
-		isPass, user, err := h.userService.LoginCheck(login)
-		if isPass {
-			generateToken(h, c, user)
-		} else {
-			c.JSON(http.StatusOK, gin.H{
-				"status": -1,
-				"msg":    "verification failed: " + err.Error(),
-				"data":   nil,
-			})
-		}
+type LoginReq struct {
+	Name string `json:"name"`
+	Pwd  string `json:"password"`
+}
+
+func (h *handler) Login(ctx *gin.Context, req *http.Request) {
+	var protoReq dbinit.User
+	isPass, user, err := h.userService.LoginCheck(ctx, &protoReq)
+	if isPass {
+		generateToken(h, ctx, user)
 	} else {
-		c.JSON(http.StatusOK, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"status": -1,
-			"msg":    "Failed to resolve user request data",
+			"msg":    "verification failed: " + err.Error(),
 			"data":   nil,
 		})
 	}
 }
 
 // Token generator
-func generateToken(h *handler, c *gin.Context, user user.User) {
+func generateToken(h *handler, c *gin.Context, user dbinit.User) {
 	// Construct SignKey: A value is required for signing and de-signing
 	j := md.NewJWT()
 

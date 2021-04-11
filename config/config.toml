@@ -1,9 +1,12 @@
 [mysql]
-host = '127.0.0.1'              # MySQL host
-port = '3306'                   # Post
+host = '127.0.0.1:3306'         # MySQL host
 user = 'root'                   # Username
 passwd = 'admin123.'            # Password
 database = 'golang_gin_api'     # Database
+maxOpenConn = 10                # Maximum number of open connections
+maxIdleConn = 60                # Number of idle connections
+connMaxLifeTime = 60            # Maximum connection timeout (unit: minutes)
+autoMigrate = true              # Enable auto migrate table
 
 [redis]
 addr = '127.0.0.1:6379'         # Redis addr:port
@@ -13,11 +16,13 @@ maxRetries = 3                  # The maximum number of retries when the command
 poolSize = 10                   # Maximum number of connections in the connection pool. Default is number of CPUs * 10
 minIdleConns = 5                # Minimum number of free connections
 
-[rate]
-limit = 60                      # Limiter that allows events up to rate r and permits
-burst = 10                      # Burst returns the maximum burst size. Burst is the maximum number of tokens
-
 [rabbitmq]
 addr = "172.16.53.200:5672"     # RabbitMQ host
 user = "admin"                  # Username
 passwd = "123456"               # Password
+
+[rate]
+limit = 60                      # Limiter that allows events up to rate r and permits
+burst = 10                      # Burst returns the maximum burst size. Burst is the maximum number of tokens
+
+

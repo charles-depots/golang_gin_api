@@ -8,10 +8,10 @@ import (
 )
 
 // Test an interface that requires certification
-func (h *handler) GetUserInfo(c *gin.Context) {
-	claims := c.MustGet("claims").(*md.CustomClaims)
+func (h *handler) GetUserInfo(ctx *gin.Context) {
+	claims := ctx.MustGet("claims").(*md.CustomClaims)
 	if claims != nil {
-		c.JSON(http.StatusOK, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"status": 0,
 			"msg":    "token is valid",
 			"data":   claims,

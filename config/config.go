@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"github.com/spf13/viper"
+	"time"
 )
 
 var (
@@ -11,11 +12,15 @@ var (
 
 type Config struct {
 	MySQL struct {
-		Host     string `json:"host"`
-		Port     int64  `json:"port"`
-		User     string `json:"user"`
-		Passwd   string `json:"passwd"`
-		Database string `json:"database"`
+		Host            string        `json:"host"`
+		Port            int64         `json:"port"`
+		User            string        `json:"user"`
+		Passwd          string        `json:"passwd"`
+		Database        string        `json:"database"`
+		MaxOpenConn     int           `toml:"maxOpenConn"`
+		MaxIdleConn     int           `toml:"maxIdleConn"`
+		ConnMaxLifeTime time.Duration `toml:"connMaxLifeTime"`
+		AutoMigrate     bool          `toml:"autoMigrate"`
 	} `toml:"mysql"`
 
 	Redis struct {
